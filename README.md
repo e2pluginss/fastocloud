@@ -6,6 +6,7 @@ About IPTV/Video cloud
 * Stream statistics
 * CCTV
 * Adaptive hls streams
+* Load balancing
 * Temporary urls
 * HLS push
 * EPG scanning
