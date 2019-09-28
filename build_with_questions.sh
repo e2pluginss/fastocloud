@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 #
 
 # Automatic FastoCloud Server setup v1 by urgodfather
