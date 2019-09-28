@@ -14,6 +14,8 @@
 
 #include "stream/elements/sources/httpsrc.h"
 
+#include <vector>
+
 namespace fastocloud {
 namespace stream {
 namespace elements {
@@ -45,6 +47,17 @@ void ElementSoupHTTPSrc::SetProxyPW(const std::string& pw) {
 
 void ElementSoupHTTPSrc::SetAutomaticRedirect(bool redirect) {
   SetProperty("automatic-redirect", redirect);
+}
+
+void ElementSoupHTTPSrc::SetCookies(const std::vector<std::string>& cookies) {
+  size_t number_of_row = cookies.size();
+  const char** gcookies = (const char**)malloc(sizeof(char*) * number_of_row + 1);
+  for (size_t i = 0; i < number_of_row; ++i) {
+    gcookies[i] = cookies[i].c_str();
+  }
+  gcookies[number_of_row] = NULL;
+  SetProperty("cookies", gcookies);
+  free(gcookies);
 }
 
 ElementSoupHTTPSrc* make_http_src(const std::string& location,

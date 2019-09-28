@@ -15,6 +15,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "base/http_proxy.h"
 
@@ -38,6 +39,8 @@ class ElementSoupHTTPSrc : public ElementLocation<ELEMENT_SOUP_HTTP_SRC> {
   void SetProxyID(const std::string& id);
   void SetProxyPW(const std::string& pw);
   void SetAutomaticRedirect(bool redirect);
+
+  void SetCookies(const std::vector<std::string>& cookies);
 };
 
 ElementSoupHTTPSrc* make_http_src(const std::string& location,
