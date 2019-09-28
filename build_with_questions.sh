@@ -2,7 +2,7 @@
 
 #
 
-# Automatic FastoCloud Server setup v1 by urgodfather
+# Automatic FastoCloud Server setup v1.1 by urgodfather
 
 #
 
