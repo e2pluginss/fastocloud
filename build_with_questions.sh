@@ -176,7 +176,7 @@ git clone https://github.com/fastogt/fastocloud_admin
 
 cd fastocloud_admin
 
- git submodule update --init --recursive
+git submodule update --init --recursive
 
 echo "#############################################################################"
 
