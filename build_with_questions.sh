@@ -16,7 +16,7 @@ echo "Let's make sure you are up to date"
 
 sleep 10
 
-apt-get update && apt-get upgrade -y && apt-get install python3 screen python3-setuptools git mongodb -y
+apt-get update && apt-get upgrade -y && apt-get install python3 screen python3-setuptools python3-pip git mongodb -y
 
 echo "#############################################################################"
 
