@@ -1,34 +1,28 @@
 #!/bin/bash
-
 #
-
-# Automatic FastoCloud Server setup v1.1 by urgodfather
-
+# Automatic FastoCloud Server setup v1.2 by urgodfather
 #
-
 #
-
-
 
 echo "#############################################################################"
-
+echo ""
 echo "FastoCloud Install"
 
 sleep 10
 
-
-
-apt-get update && apt-get upgrade -y && apt-get install python3 screen python3-setuptools git mongodb -y
-
-
-
 echo "#############################################################################"
-
+echo ""
 echo "Let's make sure you are up to date"
 
 sleep 10
 
+apt-get update && apt-get upgrade -y && apt-get install python3 screen python3-setuptools git mongodb -y
 
+echo "#############################################################################"
+
+echo "Pulling the latest sources"
+
+sleep 10
 
 git clone https://github.com/fastogt/fastocloud
 
@@ -38,15 +32,11 @@ git submodule update --init --recursive
 
 cd build
 
-
-
 echo "#############################################################################"
-
-echo "Pulling the latest sources"
+echo ""
+echo "Staging the environment"
 
 sleep 10
-
-
 
 git clone https://github.com/fastogt/pyfastogt
 
@@ -58,37 +48,31 @@ cd ../
 
 rm -rf pyfastogt
 
-
-
 echo "#############################################################################"
-
-echo "Staging the environment"
+echo ""
+echo "Building the service"
 
 sleep 10
 
-
-
 ./build_env.py
 
-
-
 echo "#############################################################################"
-
+echo ""
 echo "Service is now built"
 
 sleep 10
 
+echo "#############################################################################"
+echo ""
+echo "We need to get you a key"
 
+sleep 10
 
 license_gen  &gt; license.key
 
-
-
-
-
 echo "#############################################################################"
-
-echo "We need to get you a key"
+echo ""
+echo "Key has been made"
 
 sleep 10
 
@@ -105,47 +89,33 @@ echo "Your license key is : $line"
 n=$((n+1))
 
 sleep 10
-
-
+echo ""
+echo "#############################################################################"
+echo ""
+echo "Installing the license key"
+sleep 10
 
 /build.py release $line
 
-done &lt; $filename
-
-
-
+done > $filename
+echo " "
 echo "#############################################################################"
-
-echo "Installing the license key"
-
-sleep 10
-
-
-
-useradd -m -U -d /home/fastocloud fastocloud -s /bin/bash
-
-
-
-echo "#############################################################################"
-
+echo " "
 echo "Making the system user"
 
 sleep 10
 
-
+useradd -m -U -d $HOME/fastocloud fastocloud -s /bin/bash
 
 systemctl enable fastocloud
 
 systemctl start fastocloud
 
-
-
 echo "#############################################################################"
-
+echo " "
 echo "Setting up the service"
-
 sleep 10
-
+echo " "
 echo "#############################################################################"
 
 echo " "
@@ -158,7 +128,7 @@ echo " "
 
 echo " "
 
-      read -p "Do you need to install the panel too (y/n)?" CONT
+      read -p "Do you need to install the admin panel too (y/n)?" CONT
 
       if [ "$CONT" == "n" ] || [ "$CONT" == "n" ]; then
 
@@ -167,8 +137,10 @@ echo " "
       else
 
 echo "#############################################################################"
+echo " "
+echo "Grabbing the latest admin panel"
 
-
+sleep 10
 
 cd ~
 
@@ -177,38 +149,34 @@ git clone https://github.com/fastogt/fastocloud_admin
 cd fastocloud_admin
 
 git submodule update --init --recursive
-
+echo " "
 echo "#############################################################################"
-
-echo "Grabbing the latest panel"
-
+echo " "
+echo "Getting things ready"
 sleep 10
 
 
+
+pip3 install wheel -y
 
 pip3 install -r requirements.txt
 
-pip3 install wheel
 
 echo "#############################################################################"
-
-echo "Getting things ready"
-
+echo " "
+echo "Panel is now installed!"
+echo " "
 sleep 10
-
-
+echo "#############################################################################"
+echo " "
+echo "Starting the panel"
+sleep 10
 
 screen -d -m -S fasto bash -c 'cd $HOME/fastocloud_admin && ./server.py'
-
-
-
+echo " "
 echo "#############################################################################"
 
-echo "Panel is now installed!"
-
 sleep 10
-
-
 
       read -p "Let's make your first login (y/n)?" CONT
 
@@ -216,62 +184,94 @@ sleep 10
 
       reboot
 
-      fi
-
-
+      else
 
 echo "#############################################################################"
-
+echo " "
 sleep 10
 
 # email="USER INPUT"
 
 read -p "Enter an email address: " email
 
-
-
 read -p "Continue? (y/n): " CONT
-
-    
 
       if [ "$CONT" == "n" ] || [ "$CONT" == "n" ]; then
 
-      read -p "you must enter an email address: " email
+      read -p "You must enter an email address: " email
 
       else
-
-
 
 # pass="random"
 
 date +%s | sha256sum | base64 | head -c 32
 
-
-
 ./scripts/create_provider.py --email=$email --password=$pass
+echo " "
+echo "#############################################################################"
+echo " "
+sleep 10
+
+cp $HOME/fastocloud/build/license.key registration.key
+
+echo $email > registration.key
+
+echo $pass > registration.key
+
+
+
+filename2='registration.key'
 
 
 
 echo "#############################################################################"
+echo " "
+echo " "
+
+      read -p "Do you need to install the subscriber panel too (y/n)?" CONT
+
+      if [ "$CONT" == "n" ] || [ "$CONT" == "n" ]; then
+
+      reboot
+
+      else
+
+echo "#############################################################################"
+echo " "
+echo "Grabbing the latest subscriber panel"
 
 sleep 10
 
+cd ~
 
+git clone https://github.com/fastogt/fastotv_site_new
 
-cp ~/fastocloud/build/license.key registration.key
+cd fastotv_site_new
 
-echo $email &gt; registration.key
+git submodule update --init --recursive
+echo "#############################################################################"
+echo " "
+echo "Getting things ready"
+sleep 10
+echo " "
+pip3 install -r requirements.txt
+git submodule update --init --recursive
+echo "#############################################################################"
+echo " "
+echo "Subscriber panel is now installed!"
 
-echo $pass &gt; registration.key
+sleep 10
+echo "#############################################################################"
+echo " "
+echo "Starting the subscriber panel"
 
+sleep 10
 
-
-filename='registration.key'
-
-
+screen -d -m -S subscribers bash -c 'cd $HOME/fastotv_site_new && ./server.py'
 
 echo "#############################################################################"
-
+echo " "
+sleep 10
 echo " "
 
 echo "#############################################################################"
@@ -282,7 +282,7 @@ echo " "
 
 echo "Your registration is : "
 
-read $filename
+read $filename2
 
 
 
